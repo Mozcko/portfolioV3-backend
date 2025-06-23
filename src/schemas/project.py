@@ -1,7 +1,7 @@
 from pydantic import BaseModel, ConfigDict
 from typing import List, Optional
 from tag import TagCreate, Tag
-from technology import TechnologyCreate, Technology
+from technology import Technology
 
 
 class ProjectBase(BaseModel):
@@ -14,7 +14,7 @@ class ProjectBase(BaseModel):
 class ProjectCreate(ProjectBase):
     image_url: str
     tags: List[TagCreate] = []
-    technologies: List[TechnologyCreate] = []
+    technology_ids: List[int] = []
 
 
 class Project(ProjectBase):
@@ -33,4 +33,4 @@ class ProjectUpdate(ProjectBase):
     source_code: Optional[str] = None
     interest: Optional[str] = None
     tags: Optional[List[TagCreate]] = None
-    technologies: Optional[List[TechnologyCreate]] = None
+    technology_ids: Optional[List[int]] = None

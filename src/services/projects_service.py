@@ -14,20 +14,24 @@ def get_projects(db: Session, skip: int = 0, limit: int = 100):
 
 
 def create_project(db: Session, project: project_schema.ProjectCreate):
-    db_project = Project(
-        name=project.name,
-        image_url=project.image_url,
-        link=project.link,
-        source_code=project.source_code,
-        interest=project.interest,
-    )
-    for tag_data in project.tags:
-        db_tag = Tag(**tag_data.model_dump(), project=db_project)
-        db.add(db_tag)
+    technology_ids = project.technology_ids
 
-    for tech_data in project.technologies:
-        db_tech = Technology(**tech_data.model_dump(), project=db_project)
-        db.add(db_tech)
+    project_data = project.model_dump(exclude={"tags", "technology_ids"})
+    db_project = Project(**project_data)
+
+    for tag_data in project.tags:
+        db_tag = Tag(**tag_data.model_dump())
+        db_project.tags.append(db_tag)
+
+    if technology_ids:
+        db_technologies = (
+            db.query(Technology).filter(Technology.id.in_(technology_ids)).all()
+        )
+        if len(db_technologies) != len(technology_ids):
+            # Opcional: Podrías querer manejar este error de forma más específica.
+            # Por ahora, simplemente ignoramos los IDs no encontrados.
+            pass
+        db_project.technologies.extend(db_technologies)
 
     db.add(db_project)
     db.commit()
@@ -36,19 +40,34 @@ def create_project(db: Session, project: project_schema.ProjectCreate):
 
 
 def update_project(db: Session, project_id: int, project: project_schema.ProjectUpdate):
-    db_project = get_project(db=db, project_id=project_id)
+    db_project = db.query(Project).filter(Project.id == project_id).first()
     if not db_project:
         return None
 
-    update_data = project.model_dump(exclude_unset=True)
-
+    update_data = project.model_dump(
+        exclude_unset=True, exclude={"tags", "technology_ids"}
+    )
     for key, value in update_data.items():
         setattr(db_project, key, value)
 
-    db.add(db_project)
+    if project.technology_ids is not None:
+        db_project.technologies.clear()
+        if project.technology_ids:
+            db_technologies = (
+                db.query(Technology)
+                .filter(Technology.id.in_(project.technology_ids))
+                .all()
+            )
+            db_project.technologies.extend(db_technologies)
+
+    if project.tags is not None:
+        db_project.tags.clear()
+        for tag_data in project.tags:
+            db_tag = Tag(**tag_data.model_dump())
+            db_project.tags.append(db_tag)
+
     db.commit()
     db.refresh(db_project)
-
     return db_project
 
 
