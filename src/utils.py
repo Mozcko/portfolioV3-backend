@@ -1,9 +1,15 @@
-import logging  
+import os
+import logging
+import uuid
+
 from sqlalchemy.orm import Session
 from database import SessionLocal
 from models.user import User
 from core.config import settings
 from core.security import get_password_hash
+
+from fastapi import UploadFile, HTTPException
+from PIL import Image
 
 logger = logging.getLogger(__name__)
 
@@ -41,3 +47,37 @@ def create_admin_user_on_startup():
     finally:
         # Asegura que la sesión de la base de datos se cierre siempre
         db.close()
+
+def save_image(file: UploadFile, base_path: str = "src/static/images") -> str:
+    # 1. Definir la ruta y asegurarse de que el directorio exista
+    upload_dir = os.path.join(os.getcwd(), base_path)
+    os.makedirs(upload_dir, exist_ok=True)
+
+    # 2. Validar que el archivo es una imagen usando Pillow
+    try:
+        img = Image.open(file.file)
+        img.verify()  # Intenta verificar la integridad de la imagen
+        # Volver al inicio del archivo después de verificar
+        file.file.seek(0)
+    except Exception as e:
+        logger.error(f"Error al validar la imagen: {e}")
+        raise HTTPException(status_code=400, detail="El archivo proporcionado no es una imagen válida.")
+
+    # 3. Generar un nombre de archivo único para evitar colisiones
+    file_extension = os.path.splitext(file.filename)[1]
+    unique_filename = f"{uuid.uuid4()}{file_extension}"
+    file_path = os.path.join(upload_dir, unique_filename)
+
+    # 4. Guardar el archivo en el disco
+    try:
+        with open(file_path, "wb") as buffer:
+            buffer.write(file.file.read())
+    except Exception as e:
+        logger.error(f"No se pudo guardar el archivo: {e}")
+        raise HTTPException(status_code=500, detail="No se pudo guardar el archivo de imagen.")
+
+    # 5. Devolver la ruta pública
+    public_url_path = f"/static/images/{unique_filename}"
+    logger.info(f"Imagen '{unique_filename}' guardada exitosamente en '{public_url_path}'")
+    
+    return public_url_path

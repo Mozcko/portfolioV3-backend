@@ -3,12 +3,12 @@ from typing import Generator
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from src.database import Base
-from src.main import app
-from src.dependencies import get_db
-from src.core.config import settings
-from src.core.security import create_access_token, get_password_hash
-from src.models.user import User
+from database import Base
+from main import app
+from dependencies import get_db
+from core.config import settings
+from core.security import create_access_token, get_password_hash
+from models.user import User
 import os
 import shutil
 
@@ -63,7 +63,6 @@ def client(db_session: Generator) -> Generator:
 def admin_auth_token(db_session) -> str:
     test_admin = User(
         username=settings.ADMIN_USERNAME,
-        email=settings.ADMIN_EMAIL,
         hashed_password=get_password_hash(settings.ADMIN_PASSWORD)
     )
     db_session.add(test_admin)

@@ -1,7 +1,7 @@
 from pydantic import BaseModel, ConfigDict
 from typing import List, Optional
-from tag import TagCreate, Tag
-from technology import Technology
+from schemas.tag import TagCreate, Tag
+from schemas.technology import Technology
 
 
 class ProjectBase(BaseModel):
