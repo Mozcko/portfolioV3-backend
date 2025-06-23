@@ -1,16 +1,20 @@
 import os
 import logging
 import uuid
+
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
-from fastapi.staticfiles import StaticFiles
-from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.cors import CORSMiddleware
+from starlette.staticfiles import StaticFiles
 
-from core.logging import setup_logging
+from src.core.logging import setup_logging
 from database import engine, Base
-from core.config import settings
-from routes import auth, i18n, certificates, experiences, projects
-from utils import create_admin_user_on_startup
+
+from src.core.config import settings
+
+from src.routes import auth, i18n, certificates, experiences, projects, technologies
+from src.utils import create_admin_user_on_startup
+from src.database import SessionLocal
 
 from fastapi import UploadFile
 from PIL import Image
@@ -22,19 +26,6 @@ setup_logging()
 logger = logging.getLogger(__name__)
 
 def save_image(file: UploadFile, base_path: str = "src/static/images") -> str:
-    """
-    Valida, guarda una imagen en el directorio especificado y devuelve su ruta pública.
-
-    Args:
-        file: El archivo de imagen subido (UploadFile).
-        base_path: El directorio base donde se guardarán las imágenes.
-
-    Returns:
-        La ruta de URL pública para acceder a la imagen.
-    
-    Raises:
-        HTTPException: Si el archivo no es una imagen válida o es muy grande.
-    """
     # 1. Definir la ruta y asegurarse de que el directorio exista
     upload_dir = os.path.join(os.getcwd(), base_path)
     os.makedirs(upload_dir, exist_ok=True)
@@ -98,8 +89,9 @@ app.add_middleware(
 app.mount("/static", StaticFiles(directory="src/static"), name="static")
 
 # rutas de la aplicación
-app.include_router(auth.router, prefix="/auth")
+app.include_router(auth.router)
 app.include_router(i18n.router)
 app.include_router(certificates.router)
 app.include_router(experiences.router)
 app.include_router(projects.router)
+app.include_router(technologies.router)
