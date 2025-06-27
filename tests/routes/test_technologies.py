@@ -9,7 +9,7 @@ def test_create_technology(client, admin_auth_token):
         "image_url": "http://example.com/tech.png" # Asegúrate que tu schema no pida más campos
     }
     response = client.post(
-        "/api/technologies/",
+        "/technologies/",
         headers={"Authorization": f"Bearer {admin_auth_token}"},
         json=tech_data
     )

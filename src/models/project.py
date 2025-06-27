@@ -13,7 +13,7 @@ class Project(Base):
     description = Column(String)
     image_url = Column(String)
     project_url = Column(String)
-
+    
     tags = relationship(
         "Tag",
         secondary=project_tag,

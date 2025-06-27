@@ -2,7 +2,7 @@ import pytest
 from typing import Generator
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, Session
 from database import Base
 from main import app
 from dependencies import get_db
@@ -11,6 +11,7 @@ from core.security import create_access_token, get_password_hash
 from models.user import User
 import os
 import shutil
+
 
 
 # --- Configuración de la Base de Datos de Prueba ---
@@ -57,6 +58,20 @@ def client(db_session: Generator) -> Generator:
     
     app.dependency_overrides.clear()
 
+@pytest.fixture(scope="function")
+def admin_auth_token(client: TestClient, admin_user: User):
+    login_data = {
+        "grant_type": "password", # <-- ¡AQUÍ ESTÁ LA CLAVE!
+        "username": admin_user.username,
+        "password": "testpassword",
+    }
+    response = client.post("/auth/login", data=login_data)
+    
+    # Añadimos una aserción para que la prueba falle con un mensaje claro si el login falla
+    assert response.status_code == 200, f"Error al iniciar sesión para obtener el token: {response.text}"
+    
+    token_data = response.json()
+    return f"Bearer {token_data['access_token']}"
 
 # --- Fixture para obtener un Token de Autenticación de Administrador ---
 @pytest.fixture(scope="function")

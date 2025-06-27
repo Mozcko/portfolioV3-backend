@@ -7,25 +7,27 @@ from models.user import User
 from core.security import get_password_hash
 
 
-def test_login_for_access_token(client, admin_user):
-    # Envía los datos explícitamente como un formulario
-    response = client.post(
-        "/auth/login",
-        data={"username": admin_user.username, "password": "testpassword"}
-    )
-    # Primero, verifica que el código de estado sea el correcto
+def test_login_for_access_token(client: TestClient, admin_user: User):
+    # Añade 'grant_type' aquí también
+    login_data = {
+        "grant_type": "password",
+        "username": admin_user.username,
+        "password": "testpassword",
+    }
+    response = client.post("/auth/login", data=login_data)
     assert response.status_code == 200, response.text
     data = response.json()
     assert "access_token" in data
     assert data["token_type"] == "bearer"
 
-
-def test_login_with_wrong_password(client, admin_user):
+def test_login_with_wrong_password(client: TestClient, admin_user: User):
     response = client.post(
         "/auth/login",
-        data={"username": admin_user.username, "password": "wrongpassword"}
+        data={
+            "grant_type": "password",
+            "username": admin_user.username, 
+            "password": "wrongpassword"
+        },
     )
-    # Para credenciales incorrectas, el código es 401 Unauthorized
-    assert response.status_code == 401, response.text
-    data = response.json()
-    assert data["detail"] == "Incorrect username or password"
+    assert response.status_code == 401
+    assert response.json() == {"detail": "Usuario o contraseña incorrectos"}

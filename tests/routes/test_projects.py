@@ -13,9 +13,9 @@ def test_create_project_with_technologies(client, admin_auth_token):
         "tags": [],
         "technologies": []
     }
-    # La URL correcta para la creación es "/api/projects/"
+    # La URL correcta para la creación es "/projects/"
     response = client.post(
-        "/api/projects/", # <-- Asegúrate que la URL sea esta
+        "/projects/", # <-- Asegúrate que la URL sea esta
         headers={"Authorization": f"Bearer {admin_auth_token}"},
         json=project_data
     )

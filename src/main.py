@@ -53,7 +53,7 @@ app.add_middleware(
 app.mount("/static", StaticFiles(directory="src/static"), name="static")
 
 # rutas de la aplicación
-app.include_router(auth.router)
+app.include_router(auth.router, prefix="/auth")
 app.include_router(i18n.router)
 app.include_router(certificates.router)
 app.include_router(experiences.router)
