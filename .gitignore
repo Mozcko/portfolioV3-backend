@@ -45,3 +45,6 @@ htmlcov/
 build/
 dist/
 *.egg-info/
+
+# Archivos estáticos y de pruebas
+static/*
