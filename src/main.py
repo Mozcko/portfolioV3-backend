@@ -12,7 +12,7 @@ from database import engine, Base
 
 from core.config import settings
 
-from routes import auth, i18n, certificates, experiences, projects, technologies
+from routes import auth, i18n, certificates, projects
 from utils import create_admin_user_on_startup
 from database import SessionLocal
 
@@ -20,8 +20,6 @@ cwd = os.getcwd()
 static_path = os.path.abspath(os.path.join(cwd, "static"))
 setup_logging()
 logger = logging.getLogger(__name__)
-
-
 
 
 @asynccontextmanager
@@ -56,6 +54,4 @@ app.mount("/static", StaticFiles(directory="src/static"), name="static")
 app.include_router(auth.router, prefix="/auth")
 app.include_router(i18n.router)
 app.include_router(certificates.router)
-app.include_router(experiences.router)
 app.include_router(projects.router)
-app.include_router(technologies.router)
