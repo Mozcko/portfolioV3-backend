@@ -1,44 +1,45 @@
-from fastapi import APIRouter, Depends, HTTPException, Form, File, UploadFile
+from fastapi import APIRouter, Depends, HTTPException, Form, File, UploadFile, status
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
 from schemas import certificate as certificate_schema
 from services import certificates_service
 from dependencies import get_db, get_current_admin_user
-from utils import save_image
 
 router = APIRouter(prefix="/certificates", tags=["Certificates"])
 
-@router.post("/", response_model=certificate_schema.Certificate, dependencies=[Depends(get_current_admin_user)])
+@router.post("/", response_model=certificate_schema.Certificate, status_code=status.HTTP_201_CREATED, dependencies=[Depends(get_current_admin_user)])
 def create_certificate(
-    db: Session = Depends(get_db),
     title: str = Form(...),
     school: str = Form(...),
     link: Optional[str] = Form(None),
-    file: UploadFile = File(...)  # <-- Acepta el archivo aquí
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db)
 ):
-
-    image_url = save_image(file)
-
-    certificate_data = certificate_schema.CertificateCreate(
-        title=title,
-        school=school,
-        link=link,
-        image_route=image_url  
+    """
+    Crea un nuevo certificado con su imagen.
+    """
+    certificate_create = certificate_schema.CertificateCreate(title=title, school=school, link=link)
+    
+    return certificates_service.create_certificate(
+        db=db, certificate=certificate_create, image_file=file
     )
-
-    return certificates_service.create_certificate(db=db, certificate=certificate_data)
 
 @router.get("/", response_model=List[certificate_schema.Certificate])
 def read_certificates(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    certificates = certificates_service.get_certificates(db, skip=skip, limit=limit)
-    return certificates
+    """
+    Obtiene una lista de todos los certificados.
+    """
+    return certificates_service.get_certificates(db, skip=skip, limit=limit)
 
 @router.get("/{certificate_id}", response_model=certificate_schema.Certificate)
 def read_certificate(certificate_id: int, db: Session = Depends(get_db)):
+    """
+    Obtiene un certificado por su ID.
+    """
     db_certificate = certificates_service.get_certificate(db, certificate_id=certificate_id)
     if db_certificate is None:
-        raise HTTPException(status_code=404, detail="Certificate not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Certificate not found")
     return db_certificate
 
 @router.put("/{certificate_id}", response_model=certificate_schema.Certificate, dependencies=[Depends(get_current_admin_user)])
@@ -48,40 +49,37 @@ def update_certificate(
     title: Optional[str] = Form(None),
     school: Optional[str] = Form(None),
     link: Optional[str] = Form(None),
-    file: Optional[UploadFile] = File(None) # <-- El archivo es opcional en la actualización
+    file: Optional[UploadFile] = File(None)
 ):
-
-    db_certificate = certificates_service.get_certificate(db, certificate_id=certificate_id)
-    if not db_certificate:
-        raise HTTPException(status_code=404, detail="Certificate not found")
-
-    update_data = {}
-    if title is not None:
-        update_data['title'] = title
-    if school is not None:
-        update_data['school'] = school
-    if link is not None:
-        update_data['link'] = link
-
+    """
+    Actualiza un certificado. Permite cambiar datos y/o la imagen.
+    """
+    update_data = certificate_schema.CertificateUpdate(title=title, school=school, link=link)
     
-    if file:
-        image_url = save_image(file)
-        update_data['image_route'] = image_url
-        # TODO: borrar la imagen antigua del servidor
+    # Valida que al menos un campo se esté actualizando
+    if not update_data.model_dump(exclude_unset=True) and not file:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No hay datos para actualizar")
 
-    if not update_data:
-        raise HTTPException(status_code=400, detail="No hay datos para actualizar")
-
-    certificate_schema_update = certificate_schema.CertificateUpdate(**update_data)
-    
-    return certificates_service.update_certificate(
-        db, certificate_id=certificate_id, certificate_data=certificate_schema_update
+    updated_certificate = certificates_service.update_certificate(
+        db=db, 
+        certificate_id=certificate_id, 
+        certificate_data=update_data,
+        image_file=file
     )
+    
+    if updated_certificate is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Certificate not found")
+        
+    return updated_certificate
 
-@router.delete("/{certificate_id}", response_model=certificate_schema.Certificate, dependencies=[Depends(get_current_admin_user)])
+@router.delete("/{certificate_id}", status_code=status.HTTP_204_NO_CONTENT, dependencies=[Depends(get_current_admin_user)])
 def delete_certificate(certificate_id: int, db: Session = Depends(get_db)):
-    # TODO: borrar la imagen del servidor
+    """
+    Elimina un certificado y su imagen asociada.
+    """
     db_certificate = certificates_service.delete_certificate(db=db, certificate_id=certificate_id)
     if db_certificate is None:
-        raise HTTPException(status_code=404, detail="Certificate not found")
-    return db_certificate
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Certificate not found")
+    
+    # Devuelve una respuesta 204 sin contenido como es estándar para DELETE
+    return None
