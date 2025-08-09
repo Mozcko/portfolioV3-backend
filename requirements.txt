@@ -9,6 +9,3 @@ pydantic
 pydantic-settings
 Pillow 
 python-multipart
-pytest
-httpx
-pytest-asyncio
