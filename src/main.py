@@ -12,7 +12,7 @@ from database import engine, Base
 
 from core.config import settings
 
-from routes import auth, i18n, certificates, projects
+from routes import auth, i18n, certificates, projects, technologies
 from utils import create_admin_user_on_startup
 from database import SessionLocal
 
@@ -55,3 +55,4 @@ app.include_router(auth.router, prefix="/auth")
 app.include_router(i18n.router)
 app.include_router(certificates.router)
 app.include_router(projects.router)
+app.include_router(technologies.router)

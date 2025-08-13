@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Form, File, UploadFile, status
+from fastapi import APIRouter, Depends, HTTPException, Form, File, UploadFile, status, Request
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
@@ -9,7 +9,6 @@ from dependencies import get_db, get_current_admin_user
 router = APIRouter(prefix="/projects", tags=["Projects"])
 
 
-# TODO: add documentation on the API
 @router.post(
     "/",
     response_model=project_schema.Project,
@@ -18,34 +17,50 @@ router = APIRouter(prefix="/projects", tags=["Projects"])
 )
 def create_project(
     title: str = Form(...),
-    description: Optional[str] = Form(...),
-    image: Optional[UploadFile] = File(...),
+    description: str = Form(...),
+    image: UploadFile = File(...),
+    technology_ids: Optional[str] = Form(...),
     db: Session = Depends(get_db),
 ):
-    project_create = project_schema.ProjectCreate(title=title, description=description)
+    """Create a new project with associated technologies."""
+    
+    # Parse technology IDs from string
+    tech_ids = []
+    if technology_ids:
+        try:
+            tech_ids = [int(id.strip()) for id in technology_ids.split(",") if id.strip()]
+        except ValueError:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid technology IDs format"
+            )
+    
+    project_create = project_schema.ProjectCreate(
+        title=title,
+        description=description,
+        technology_ids=tech_ids
+    )
 
     return projects_service.create_project(
         db=db, project=project_create, image_file=image
     )
 
 
-# TODO: add documentation on the API
 @router.get("/", response_model=List[project_schema.Project])
 def read_projects(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    """Get all projects with their technologies."""
     return projects_service.get_projects(db=db, skip=skip, limit=limit)
 
 
-# TODO: add documentation on the API
 @router.get("/{project_id}", response_model=project_schema.Project)
 def read_project(project_id: int, db: Session = Depends(get_db)):
-
+    """Get a single project with its technologies."""
     db_project = projects_service.get_project(db=db, project_id=project_id)
     if db_project is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     return db_project
 
 
-# TODO: add documentation on the API
 @router.put(
     "/{project_id}",
     response_model=project_schema.Project,
@@ -57,14 +72,26 @@ def update_project(
     title: Optional[str] = Form(None),
     description: Optional[str] = Form(None),
     image: Optional[UploadFile] = File(None),
+    technology_ids: Optional[str] = Form(None),
 ):
-    update_data = project_schema.ProjectUpdate(title=title, description=description)
-
-    if not update_data:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="No hay datos para actualizar",
-        )
+    """Update a project including its technology associations."""
+    
+    # Parse technology IDs from string
+    tech_ids = None
+    if technology_ids is not None:
+        try:
+            tech_ids = [int(id.strip()) for id in technology_ids.split(",") if id.strip()]
+        except ValueError:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid technology IDs format"
+            )
+    
+    update_data = project_schema.ProjectUpdate(
+        title=title,
+        description=description,
+        technology_ids=tech_ids
+    )
 
     updated_project = projects_service.update_project(
         db=db, project_id=project_id, project_data=update_data, image_file=image
@@ -77,17 +104,17 @@ def update_project(
     return updated_project
 
 
-# TODO: add documentation on the API
 @router.delete(
     "/{project_id}",
     status_code=status.HTTP_204_NO_CONTENT,
     dependencies=[Depends(get_current_admin_user)],
 )
 def delete_project(project_id: int, db: Session = Depends(get_db)):
+    """Delete a project and its associated image."""
     db_project = projects_service.delete_project(db=db, project_id=project_id)
     if db_project is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Certificate not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Project not found"
         )
     
     return None
