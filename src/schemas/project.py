@@ -5,7 +5,8 @@ from schemas.technology import Technology
 
 class ProjectBase(BaseModel):
     title: str
-    description: str
+    description_en: str
+    description_es: str
 
 
 class ProjectCreate(ProjectBase):
@@ -21,6 +22,7 @@ class Project(ProjectBase):
 
 class ProjectUpdate(BaseModel):
     title: Optional[str] = None
-    description: Optional[str] = None
+    description_en: Optional[str] = None
+    description_es: Optional[str] = None
     image_route: Optional[str] = None
     technology_ids: Optional[List[int]] = None
