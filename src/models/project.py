@@ -1,16 +1,9 @@
 from sqlalchemy import Column, Integer, String, Table, ForeignKey
 from sqlalchemy.orm import relationship
-from typing import List
 
+from .project_technology import project_technologies
 from database import Base
 
-# Association table for many-to-many relationship between projects and technologies
-project_technologies = Table(
-    'project_technologies',
-    Base.metadata,
-    Column('project_id', Integer, ForeignKey('projects.id'), primary_key=True),
-    Column('technology_id', Integer, ForeignKey('technologies.id'), primary_key=True)
-)
 
 class Project(Base):
     __tablename__ = "projects"

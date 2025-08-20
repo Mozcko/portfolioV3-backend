@@ -12,7 +12,7 @@ def get_certificate(db: Session, certificate_id: int):
 def get_certificates(db: Session, skip: int = 0, limit: int = 100):
     return db.query(Certificate).offset(skip).limit(limit).all()
 
-def create_certificate(db: Session, certificate: certificate_schema.CertificateCreate, image_file: UploadFile) -> Certificate:
+def create_certificate(db: Session, certificate_data: certificate_schema.CertificateCreate, image_file: UploadFile) -> Certificate:
     """
     Crea un certificado, guarda su imagen y devuelve el objeto de la BD.
     """
@@ -21,7 +21,7 @@ def create_certificate(db: Session, certificate: certificate_schema.CertificateC
     
     # 2. Crear el objeto del modelo con los datos y la ruta de la imagen
     db_certificate = Certificate(
-        **certificate.model_dump(),
+        **certificate_data.model_dump(),
         image_route=image_route
     )
     
