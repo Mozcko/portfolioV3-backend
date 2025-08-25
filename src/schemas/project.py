@@ -1,7 +1,7 @@
 from pydantic import BaseModel, ConfigDict
 from typing import Optional, List
 
-from schemas.technology import Technology
+from .technology import Technology
 
 class ProjectBase(BaseModel):
     title: str

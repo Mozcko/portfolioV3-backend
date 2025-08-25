@@ -6,10 +6,9 @@ from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
 
-
-from models.user import User          # Importación absoluta del modelo
-from database import SessionLocal     # Importación absoluta de la base de datos
-from core.config import settings      # Importación absoluta de la configuración
+from .models.user import User          # Importación absoluta del modelo
+from .database import SessionLocal     # Importación absoluta de la base de datos
+from .core.config import settings      # Importación absoluta de la configuración
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login") # Nota: la ruta completa es /auth/login

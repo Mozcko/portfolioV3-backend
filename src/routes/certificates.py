@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, Form, File, UploadFile, s
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
-from schemas import certificate as certificate_schema
-from services import certificates_service
-from dependencies import get_db, get_current_admin_user
+from ..schemas import certificate as certificate_schema
+from ..services import certificates_service
+from ..dependencies import get_db, get_current_admin_user
 
 router = APIRouter(prefix="/certificates", tags=["Certificates"])
 

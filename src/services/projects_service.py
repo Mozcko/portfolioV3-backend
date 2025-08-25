@@ -2,11 +2,11 @@ from sqlalchemy.orm import Session
 from fastapi import UploadFile, HTTPException, status
 from typing import Optional, List
 
-from models.project import Project
-from models.technology import Technology
-from schemas import project as project_schema
+from ..models.project import Project
+from ..models.technology import Technology
+from ..schemas import project as project_schema
 
-from utils import save_image, delete_image
+from ..utils import save_image, delete_image
 
 def get_project(db: Session, project_id: int):
     """Get a single project with its technologies loaded."""
@@ -48,7 +48,8 @@ def create_project(
     # Create project
     db_project = Project(
         title=project.title,
-        description=project.description,
+        description_en=project.description_en,
+        description_es=project.description_es,
         image_route=image_route
     )
     

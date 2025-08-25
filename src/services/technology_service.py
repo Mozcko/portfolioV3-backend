@@ -2,10 +2,10 @@ from sqlalchemy.orm import Session
 from fastapi import UploadFile
 from typing import Optional
 
-from models.technology import Technology
-from schemas import technology as technology_schema
+from ..models.technology import Technology
+from ..schemas import technology as technology_schema
 
-from utils import save_image, delete_image
+from ..utils import save_image, delete_image
 
 def get_technology(db: Session, technology_id: int):
     return db.query(Technology).filter(Technology.id == technology_id).first()

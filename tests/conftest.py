@@ -3,12 +3,12 @@ from typing import Generator
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
-from database import Base
-from main import app
-from dependencies import get_db
-from core.config import settings
-from core.security import create_access_token, get_password_hash
-from models.user import User
+from src.database import Base
+from src.main import app
+from src.dependencies import get_db
+from src.core.config import settings, SRC_DIR
+from src.core.security import create_access_token, get_password_hash
+from src.models.user import User
 import os
 import shutil
 
@@ -48,40 +48,26 @@ def client(db_session: Generator) -> Generator:
 
     app.dependency_overrides[get_db] = override_get_db
     
-    test_images_path = "src/static/images"
-    if os.path.exists(test_images_path):
-        shutil.rmtree(test_images_path)
-    os.makedirs(test_images_path)
+    test_images_dir = SRC_DIR / "static" / "images"
+    if test_images_dir.exists():
+        shutil.rmtree(test_images_dir)
+    test_images_dir.mkdir(parents=True, exist_ok=True)
 
     with TestClient(app) as c:
         yield c
     
     app.dependency_overrides.clear()
 
-@pytest.fixture(scope="function")
-def admin_auth_token(client: TestClient, admin_user: User):
-    login_data = {
-        "grant_type": "password", # <-- ¡AQUÍ ESTÁ LA CLAVE!
-        "username": admin_user.username,
-        "password": "testpassword",
-    }
-    response = client.post("/auth/login", data=login_data)
-    
-    # Añadimos una aserción para que la prueba falle con un mensaje claro si el login falla
-    assert response.status_code == 200, f"Error al iniciar sesión para obtener el token: {response.text}"
-    
-    token_data = response.json()
-    return f"Bearer {token_data['access_token']}"
-
 # --- Fixture para obtener un Token de Autenticación de Administrador ---
 @pytest.fixture(scope="function")
 def admin_auth_token(db_session) -> str:
     test_admin = User(
         username=settings.ADMIN_USERNAME,
-        hashed_password=get_password_hash(settings.ADMIN_PASSWORD)
+        hashed_password=get_password_hash(settings.ADMIN_PASSWORD),
+        role="admin",
     )
     db_session.add(test_admin)
     db_session.commit()
 
-    token = create_access_token(data={"sub": settings.ADMIN_USERNAME})
+    token = create_access_token(data={"sub": settings.ADMIN_USERNAME, "role": "admin"})
     return f"Bearer {token}"

@@ -3,10 +3,10 @@ import logging
 import uuid
 
 from sqlalchemy.orm import Session
-from database import SessionLocal
-from models.user import User
-from core.config import settings
-from core.security import get_password_hash
+from .database import SessionLocal
+from .models.user import User
+from .core.config import settings, SRC_DIR
+from .core.security import get_password_hash
 
 from fastapi import UploadFile, HTTPException
 from PIL import Image
@@ -52,10 +52,10 @@ def create_admin_user_on_startup():
         db.close()
 
 
-def save_image(file: UploadFile, base_path: str = "src/static/images") -> str:
+def save_image(file: UploadFile) -> str:
     # 1. Definir la ruta y asegurarse de que el directorio exista
-    upload_dir = os.path.join(os.getcwd(), base_path)
-    os.makedirs(upload_dir, exist_ok=True)
+    upload_dir = SRC_DIR / "static" / "images"
+    upload_dir.mkdir(parents=True, exist_ok=True)
 
     # 2. Validar que el archivo es una imagen usando Pillow
     try:
@@ -72,7 +72,7 @@ def save_image(file: UploadFile, base_path: str = "src/static/images") -> str:
     # 3. Generar un nombre de archivo único para evitar colisiones
     file_extension = os.path.splitext(file.filename)[1]
     unique_filename = f"{uuid.uuid4()}{file_extension}"
-    file_path = os.path.join(upload_dir, unique_filename)
+    file_path = upload_dir / unique_filename
 
     # 4. Guardar el archivo en el disco
     try:
@@ -93,7 +93,7 @@ def save_image(file: UploadFile, base_path: str = "src/static/images") -> str:
     return public_url_path
 
 
-def delete_image(image_route: str, base_path: str = "src/static/images") -> None:
+def delete_image(image_route: str) -> None:
     """
     Elimina un archivo de imagen del servidor.
     """
@@ -107,7 +107,7 @@ def delete_image(image_route: str, base_path: str = "src/static/images") -> None
         return
 
     filename = image_route.split("/")[-1]
-    file_path = os.path.join(os.getcwd(), base_path, filename)
+    file_path = SRC_DIR / "static" / "images" / filename
 
     if os.path.exists(file_path):
         try:

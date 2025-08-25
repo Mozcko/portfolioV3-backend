@@ -9,3 +9,5 @@ pydantic
 pydantic-settings
 Pillow 
 python-multipart
+markdown2
+weasyprint

@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, Table, ForeignKey
 from sqlalchemy.orm import relationship
 
 from .project_technology import project_technologies
-from database import Base
+from ..database import Base
 
 
 class Project(Base):
@@ -22,4 +22,3 @@ class Project(Base):
         lazy="selectin"
     )
     
-
