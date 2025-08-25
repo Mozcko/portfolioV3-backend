@@ -1,5 +1,8 @@
 from pydantic_settings import BaseSettings
 from typing import List
+from pathlib import Path
+
+SRC_DIR = Path(__file__).resolve().parent.parent
 
 class Settings(BaseSettings):
     # --- Configuración de la App ---
