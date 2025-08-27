@@ -3,7 +3,7 @@ from fastapi import APIRouter
 from starlette.responses import StreamingResponse
 import io
 
-from ..services import cv_service
+from services import cv_service
 
 router = APIRouter(prefix="/cv", tags=["CV / Resume"])
 

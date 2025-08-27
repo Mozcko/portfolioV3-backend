@@ -2,8 +2,8 @@ from fastapi import APIRouter, HTTPException, Depends, Body
 from typing import Dict, Any, List
 
 # Importamos nuestro nuevo servicio y las dependencias de autenticación
-from ..services import i18n_service
-from ..dependencies import get_current_admin_user
+from services import i18n_service
+from dependencies import get_current_admin_user
 
 router = APIRouter(prefix="/i18n", tags=["Internationalization (i18n)"])
 

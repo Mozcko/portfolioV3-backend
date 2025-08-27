@@ -81,7 +81,7 @@ ALLOWED_CREDENTIALS=true
 Once you've set up your `.env` file, run the app with Uvicorn:
 
 ```bash
-uvicorn src.main:app --reload
+uvicorn main:app --reload --app-dir src
 ```
 
 The application will be available at `http://127.0.0.1:8000`. You can access the interactive API documentation at `http://127.0.0.1:8000/docs`.

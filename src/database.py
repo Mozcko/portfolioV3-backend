@@ -1,7 +1,7 @@
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
-from .core.config import settings
+from core.config import settings
 
 # Usamos una ruta relativa a la carpeta 'src'
 db_path = os.path.join(os.path.dirname(__file__), '..', settings.DATABASE_NAME)

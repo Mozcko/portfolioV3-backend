@@ -11,9 +11,9 @@ from fastapi import (
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
-from ..schemas import project as project_schema
-from ..services import projects_service
-from ..dependencies import get_db, get_current_admin_user
+from schemas import project as project_schema
+from services import projects_service
+from dependencies import get_db, get_current_admin_user
 
 router = APIRouter(prefix="/projects", tags=["Projects"])
 

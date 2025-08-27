@@ -5,19 +5,16 @@ from typing import Optional
 class JobBase(BaseModel):
     title: str
     start_date: str
-    end_date: str
     current_job: bool
 
 
 class JobCreate(JobBase):
-    pass
+    end_date: Optional[str] = None
 
 
 class Job(JobBase):
     id: int
-    start_date: str
     end_date: str
-    current_job: bool
     image_route: str
     model_config = ConfigDict(from_attributes=True)
 

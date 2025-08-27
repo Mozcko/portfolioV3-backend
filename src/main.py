@@ -6,11 +6,11 @@ from fastapi import FastAPI, HTTPException
 from starlette.middleware.cors import CORSMiddleware
 from starlette.staticfiles import StaticFiles
 
-from .core.logging import setup_logging
-from .database import engine, Base
-from .core.config import settings, SRC_DIR
-from .routes import auth, i18n, certificates, projects, technologies, jobs, cv
-from .utils import create_admin_user_on_startup
+from core.logging import setup_logging
+from database import engine, Base
+from core.config import settings, SRC_DIR
+from routes import auth, i18n, certificates, projects, technologies, jobs, cv
+from utils import create_admin_user_on_startup
 setup_logging()
 logger = logging.getLogger(__name__)
 

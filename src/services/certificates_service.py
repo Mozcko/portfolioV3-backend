@@ -2,9 +2,9 @@ from sqlalchemy.orm import Session
 from fastapi import UploadFile
 from typing import Optional
 
-from ..models.certificate import Certificate
-from ..schemas import certificate as certificate_schema
-from ..utils import save_image, delete_image
+from models.certificate import Certificate
+from schemas import certificate as certificate_schema
+from utils import save_image, delete_image
 
 def get_certificate(db: Session, certificate_id: int):
     return db.query(Certificate).filter(Certificate.id == certificate_id).first()
