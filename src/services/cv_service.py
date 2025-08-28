@@ -1,14 +1,15 @@
-import os
 import logging
 from typing import Literal
 
 import markdown2
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, UploadFile
 from weasyprint import CSS, HTML
+
+from core.config import SRC_DIR
 
 logger = logging.getLogger(__name__)
 
-CV_DIR = "src/cv"
+CV_DIR = SRC_DIR / "static" / "others"
 SUPPORTED_LANGUAGES = Literal["en", "es"]
 
 
@@ -26,17 +27,17 @@ def generate_cv_pdf(lang_code: SUPPORTED_LANGUAGES) -> bytes:
         HTTPException: If the Markdown or CSS file is not found.
     """
     md_filename = f"cv_{lang_code}.md"
-    md_filepath = os.path.join(CV_DIR, md_filename)
-    css_filepath = os.path.join(CV_DIR, "style.css")
+    md_filepath = CV_DIR / md_filename
+    css_filepath = CV_DIR / "style.css"
 
     # 1. Verify that the required files exist
-    if not os.path.exists(md_filepath):
+    if not md_filepath.exists():
         logger.error(f"Markdown file not found: {md_filepath}")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"CV for language '{lang_code}' not found.",
         )
-    if not os.path.exists(css_filepath):
+    if not css_filepath.exists():
         logger.error(f"Stylesheet not found: {css_filepath}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -45,8 +46,10 @@ def generate_cv_pdf(lang_code: SUPPORTED_LANGUAGES) -> bytes:
 
     try:
         # 2. Read Markdown and CSS content and convert to HTML
-        with open(md_filepath, "r", encoding="utf-8") as f:
-            html_content = markdown2.markdown(f.read(), extras=["tables", "fenced-code-blocks"])
+        html_content = markdown2.markdown(
+            md_filepath.read_text(encoding="utf-8"),
+            extras=["tables", "fenced-code-blocks"],
+        )
 
         # 3. Generate PDF using WeasyPrint
         html = HTML(string=html_content)
@@ -61,4 +64,36 @@ def generate_cv_pdf(lang_code: SUPPORTED_LANGUAGES) -> bytes:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Could not generate the PDF file.",
+        )
+
+
+async def update_cv_md(lang_code: SUPPORTED_LANGUAGES, file: UploadFile):
+    """
+    Updates a CV's Markdown file with the content of an uploaded file.
+
+    Args:
+        lang_code: The language code ('en' or 'es').
+        file: The uploaded Markdown file.
+
+    Raises:
+        HTTPException: If the uploaded file is not a Markdown file or if
+                       there's an error saving the file.
+    """
+    if not file.filename.endswith(".md"):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid file type. Please upload a Markdown (.md) file.",
+        )
+
+    md_filepath = CV_DIR / f"cv_{lang_code}.md"
+
+    try:
+        content = await file.read()
+        md_filepath.write_text(content.decode("utf-8"), encoding="utf-8")
+        logger.info(f"Successfully updated CV markdown for '{lang_code}'.")
+    except Exception as e:
+        logger.exception(f"Failed to update CV markdown for '{lang_code}': {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Could not save the CV file.",
         )

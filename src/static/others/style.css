@@ -1,0 +1,53 @@
+/* Estilos básicos para el CV generado desde Markdown */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    margin: 2cm; /* Márgenes para la impresión */
+}
+
+h1, h2, h3 {
+    color: #2c3e50;
+    border-bottom: 1px solid #ecf0f1;
+    padding-bottom: 5px;
+    margin-top: 24px;
+}
+
+h1 {
+    text-align: center;
+    border-bottom: 2px solid #3498db;
+    font-size: 2.5em;
+}
+
+a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+ul {
+    padding-left: 20px;
+}
+
+li {
+    margin-bottom: 5px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
