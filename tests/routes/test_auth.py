@@ -1,14 +1,12 @@
 # tests/routes/test_auth.py
 
 from fastapi.testclient import TestClient
-from core.config import settings
 from sqlalchemy.orm import Session
-from models.user import User
-from core.security import get_password_hash
+from src.models.user import User
 
 
 def test_login_for_access_token(client: TestClient, admin_user: User):
-    # Añade 'grant_type' aquí también
+    """Test successful login and token generation."""
     login_data = {
         "grant_type": "password",
         "username": admin_user.username,
@@ -21,6 +19,7 @@ def test_login_for_access_token(client: TestClient, admin_user: User):
     assert data["token_type"] == "bearer"
 
 def test_login_with_wrong_password(client: TestClient, admin_user: User):
+    """Test login with incorrect password."""
     response = client.post(
         "/auth/login",
         data={
@@ -31,3 +30,16 @@ def test_login_with_wrong_password(client: TestClient, admin_user: User):
     )
     assert response.status_code == 401
     assert response.json() == {"detail": "Usuario o contraseña incorrectos"}
+
+def test_login_with_nonexistent_user(client: TestClient):
+    """Test login with a user that does not exist."""
+    response = client.post(
+        "/auth/login",
+        data={"grant_type": "password", "username": "nonexistent", "password": "password"},
+    )
+    assert response.status_code == 401
+
+def test_read_users_me(client: TestClient, admin_auth_headers: dict, admin_user: User):
+    response = client.get("/auth/me", headers=admin_auth_headers)
+    assert response.status_code == 200
+    assert response.json()["username"] == admin_user.username

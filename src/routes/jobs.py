@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, Form, File, UploadFile, s
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
-from schemas import job as job_schema
-from services import jobs_service
-from dependencies import get_db, get_current_admin_user
+from src.schemas import job as job_schema
+from src.services import jobs_service
+from src.dependencies import get_db, get_current_admin_user
 
 router = APIRouter(prefix="/jobs", tags=["Jobs"])
 
@@ -18,7 +18,7 @@ router = APIRouter(prefix="/jobs", tags=["Jobs"])
 def create_job(
     title: str = Form(...),
     start_date: str = Form(...),
-    end_date: Optional[str] = Form(...),
+    end_date: Optional[str] = Form(None),
     current_job: bool = Form(...),
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
@@ -48,7 +48,7 @@ def read_job(job_id: int, db: Session = Depends(get_db)):
 
 
 @router.put(
-    "{job_id}",
+    "/{job_id}",
     response_model=job_schema.Job,
     dependencies=[Depends(get_current_admin_user)],
 )

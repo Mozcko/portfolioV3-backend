@@ -2,9 +2,8 @@ from typing import Literal
 from fastapi import APIRouter, Depends, UploadFile, File, status
 from starlette.responses import StreamingResponse
 import io
-
-from services import cv_service
-from dependencies import get_current_admin_user
+from src.services import cv_service
+from src.dependencies import get_current_admin_user
 
 
 router = APIRouter(prefix="/cv", tags=["CV / Resume"])

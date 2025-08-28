@@ -1,5 +1,6 @@
 {
   "navbar.home": "Home",
   "navbar.about": "About",
-  "navbar.contact": "Contact"
+  "navbar.contact": "Contact",
+  "new.key": "New Value"
 }

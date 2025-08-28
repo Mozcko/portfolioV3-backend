@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, Form, File, UploadFile, s
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
-from schemas import technology as technology_schema
-from services import technology_service
-from dependencies import get_db, get_current_admin_user
+from src.schemas import technology as technology_schema
+from src.services import technology_service
+from src.dependencies import get_db, get_current_admin_user
 
 router = APIRouter(prefix="/technologies", tags=["Technologies"])
 

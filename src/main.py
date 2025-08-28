@@ -5,12 +5,12 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 from starlette.middleware.cors import CORSMiddleware
 from starlette.staticfiles import StaticFiles
+from src.core.logging import setup_logging
+from src.database import engine, Base
+from src.core.config import settings, SRC_DIR
+from src.routes import auth, i18n, certificates, projects, technologies, jobs, cv, socials
+from src.utils import create_admin_user_on_startup
 
-from core.logging import setup_logging
-from database import engine, Base
-from core.config import settings, SRC_DIR
-from routes import auth, i18n, certificates, projects, technologies, jobs, cv
-from utils import create_admin_user_on_startup
 setup_logging()
 logger = logging.getLogger(__name__)
 
@@ -53,3 +53,4 @@ app.include_router(projects.router)
 app.include_router(technologies.router)
 app.include_router(jobs.router)
 app.include_router(cv.router)
+app.include_router(socials.router)

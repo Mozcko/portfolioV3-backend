@@ -5,7 +5,7 @@ import markdown2
 from fastapi import HTTPException, status, UploadFile
 from weasyprint import CSS, HTML
 
-from core.config import SRC_DIR
+from src.core.config import SRC_DIR
 
 logger = logging.getLogger(__name__)
 

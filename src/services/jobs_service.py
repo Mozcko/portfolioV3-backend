@@ -2,9 +2,9 @@ from sqlalchemy.orm import Session
 from fastapi import UploadFile
 from typing import Optional
 
-from models.job import Job
-from schemas import job as job_schema
-from utils import save_image, delete_image
+from src.models.job import Job
+from src.schemas import job as job_schema
+from src.utils import save_image, delete_image
 
 
 def get_job(db: Session, job_id: int):

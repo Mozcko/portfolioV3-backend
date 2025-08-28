@@ -14,7 +14,7 @@ class JobCreate(JobBase):
 
 class Job(JobBase):
     id: int
-    end_date: str
+    end_date: Optional[str] = None
     image_route: str
     model_config = ConfigDict(from_attributes=True)
 

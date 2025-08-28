@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, Form, File, UploadFile, s
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
-from schemas import certificate as certificate_schema
-from services import certificates_service
-from dependencies import get_db, get_current_admin_user
+from src.schemas import certificate as certificate_schema
+from src.services import certificates_service
+from src.dependencies import get_db, get_current_admin_user
 
 router = APIRouter(prefix="/certificates", tags=["Certificates"])
 
@@ -30,7 +30,7 @@ def create_certificate(
     )
 
     return certificates_service.create_certificate(
-        db=db, certificate=certificate_create, image_file=file
+        db=db, certificate_data=certificate_create, image_file=file
     )
 
 

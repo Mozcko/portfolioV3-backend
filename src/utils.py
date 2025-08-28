@@ -3,11 +3,10 @@ import logging
 import uuid
 
 from sqlalchemy.orm import Session
-from database import SessionLocal
-from models.user import User
-from core.config import settings, SRC_DIR
-from core.security import get_password_hash
-
+from src.database import SessionLocal
+from src.models.user import User
+from src.core.config import settings, SRC_DIR
+from src.core.security import get_password_hash
 from fastapi import UploadFile, HTTPException
 from PIL import Image
 

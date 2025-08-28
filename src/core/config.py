@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings
+from pydantic import ConfigDict
 from typing import List
 from pathlib import Path
 
@@ -27,9 +28,7 @@ class Settings(BaseSettings):
     ALLOWED_HEADERS: List[str] = ["*"]
     ALLOWED_EXPOSED_HEADERS: List[str] = []
     ALLOWED_CREDENTIALS: bool = False
-
-    class Config:
-        env_file = ".env"
-        extra = 'ignore'
+    
+    model_config = ConfigDict(env_file=".env", extra="ignore")
 
 settings = Settings()

@@ -1,5 +1,5 @@
 import pytest
-from typing import Generator
+from typing import Generator, Callable
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
@@ -11,6 +11,8 @@ from src.core.security import create_access_token, get_password_hash
 from src.models.user import User
 import os
 import shutil
+import io
+from PIL import Image
 
 
 
@@ -60,14 +62,32 @@ def client(db_session: Generator) -> Generator:
 
 # --- Fixture para obtener un Token de Autenticación de Administrador ---
 @pytest.fixture(scope="function")
-def admin_auth_token(db_session) -> str:
+def admin_user(db_session: Session) -> User:
+    """Creates an admin user with a known password for testing."""
     test_admin = User(
         username=settings.ADMIN_USERNAME,
-        hashed_password=get_password_hash(settings.ADMIN_PASSWORD),
+        hashed_password=get_password_hash("testpassword"), # Use a known, simple password for tests
         role="admin",
+        is_active=True,
     )
     db_session.add(test_admin)
     db_session.commit()
+    db_session.refresh(test_admin)
+    return test_admin
 
-    token = create_access_token(data={"sub": settings.ADMIN_USERNAME, "role": "admin"})
-    return f"Bearer {token}"
+@pytest.fixture(scope="function")
+def admin_auth_headers(admin_user: User) -> dict[str, str]:
+    """Returns authentication headers for an admin user."""
+    token = create_access_token(data={"sub": admin_user.username, "role": admin_user.role})
+    return {"Authorization": f"Bearer {token}"}
+
+@pytest.fixture(scope="function")
+def create_test_image() -> Callable:
+    """Returns a function to create a dummy image file for uploads."""
+    def _create_image(filename: str = "test.jpg"):
+        file = io.BytesIO()
+        image = Image.new('RGB', (100, 100), 'red')
+        image.save(file, 'jpeg')
+        file.seek(0)
+        return (filename, file, 'image/jpeg')
+    return _create_image
