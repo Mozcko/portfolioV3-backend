@@ -8,6 +8,7 @@ __pypackages__/
 # Archivos de dependencias de Python
 *.pyc
 __pycache__/
+*.mypy_cache/
 *.so
 
 # Archivos de caché y configuración de IDEs
