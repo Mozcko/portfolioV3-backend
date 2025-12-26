@@ -1,3 +1,6 @@
 [phases.setup]
 nixPkgs = ["python312"]
-aptPkgs = ["libglib2.0-0", "libpango-1.0-0", "libpangoft2-1.0-0", "libcairo2", "libgdk-pixbuf2.0-0", "libffi-dev", "libharfbuzz0b", "libfontconfig1", "shared-mime-info"]
+aptPkgs = ["libglib2.0-0", "libglib2.0-dev", "libpango-1.0-0", "libpangoft2-1.0-0", "libpangocairo-1.0-0", "libcairo2", "libgdk-pixbuf2.0-0", "libffi-dev", "libharfbuzz0b", "libfontconfig1", "shared-mime-info"]
+
+[variables]
+LD_LIBRARY_PATH = "/usr/lib/x86_64-linux-gnu"
