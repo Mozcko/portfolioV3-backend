@@ -81,7 +81,7 @@ ALLOWED_CREDENTIALS=true
 Once you've set up your `.env` file, run the app with Uvicorn:
 
 ```bash
-uvicorn main:app --reload --app-dir src
+uvicorn src.main:app --reload
 ```
 
 The application will be available at `http://127.0.0.1:8000`. You can access the interactive API documentation at `http://127.0.0.1:8000/docs`.
@@ -151,4 +151,3 @@ You can update translations in two ways:
 
 1.  **Manually**: Edit the JSON files in the `src/i18n/` directory directly.
 2.  **Via the API**: Send a `PUT` request to the `/i18n/{lang_code}` endpoint with the new JSON data in the request body. This requires admin authentication.
-
