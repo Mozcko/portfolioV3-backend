@@ -8,7 +8,8 @@ from starlette.staticfiles import StaticFiles
 from src.core.logging import setup_logging
 from src.database import engine, Base
 from src.core.config import settings, SRC_DIR
-from src.routes import auth, i18n, certificates, projects, technologies, jobs, cv, socials
+from src.routes import auth, i18n, certificates, projects, technologies, jobs, socials
+# from src.routes import cv
 from src.utils import create_admin_user_on_startup
 
 setup_logging()
@@ -52,5 +53,5 @@ app.include_router(certificates.router)
 app.include_router(projects.router)
 app.include_router(technologies.router)
 app.include_router(jobs.router)
-app.include_router(cv.router)
+# app.include_router(cv.router)
 app.include_router(socials.router)
