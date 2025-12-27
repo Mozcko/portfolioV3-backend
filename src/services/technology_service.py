@@ -22,7 +22,7 @@ def create_technology(
     Crea una tecnología y devuelve el objeto de la BD.
     """
 
-    image_route = save_image(image_file)
+    image_route = save_image(db, image_file)
 
     # Crear el objeto del modelo con los datos y la ruta de la imagen
     db_technology = Technology(
@@ -60,10 +60,10 @@ def update_technology(
     if image_file:
         # 1. Borrar la imagen antigua
         if db_technology.icon:
-            delete_image(db_technology.icon)
+            delete_image(db, db_technology.icon)
         
         # 2. Guardar la imagen nueva y actualizar la ruta
-        new_image_route = save_image(image_file)
+        new_image_route = save_image(db, image_file)
         db_technology.icon = new_image_route
 
     db.commit()
@@ -80,7 +80,7 @@ def delete_technology(db: Session, technology_id: int) -> Optional[Technology]:
         return None
     
     if db_technology.icon:
-        delete_image(db_technology.icon)
+        delete_image(db, db_technology.icon)
 
     # Borrar el registro de la base de datos
     db.delete(db_technology)

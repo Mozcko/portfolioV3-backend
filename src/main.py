@@ -2,11 +2,14 @@ import os
 import logging
 
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends, Response
 from starlette.middleware.cors import CORSMiddleware
 from starlette.staticfiles import StaticFiles
+from sqlalchemy.orm import Session
 from src.core.logging import setup_logging
 from src.database import engine, Base
+from src.dependencies import get_db
+from src.models.media import Media
 from src.core.config import settings, SRC_DIR
 from src.routes import auth, i18n, certificates, projects, technologies, jobs, socials
 # from src.routes import cv
@@ -42,6 +45,14 @@ app.add_middleware(
     allow_headers=settings.ALLOWED_HEADERS,
     expose_headers=settings.ALLOWED_EXPOSED_HEADERS,
 )
+
+# Ruta para servir imágenes desde la Base de Datos
+@app.get("/static/images/{filename}")
+def get_image(filename: str, db: Session = Depends(get_db)):
+    media = db.query(Media).filter(Media.filename == filename).first()
+    if not media:
+        raise HTTPException(status_code=404, detail="Image not found")
+    return Response(content=media.data, media_type=media.content_type)
 
 # ruta para archivos estáticos
 app.mount("/static", StaticFiles(directory=(SRC_DIR / "static")), name="static")

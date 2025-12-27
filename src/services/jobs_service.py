@@ -18,7 +18,7 @@ def get_jobs(db: Session, skip: int = 0, limit: int = 100):
 def create_job(
     db: Session, job_data: job_schema.JobCreate, image_file: UploadFile
 ) -> Job:
-    image_route = save_image(image_file)
+    image_route = save_image(db, image_file)
 
     db_job = Job(**job_data.model_dump(), image_route=image_route)
 
@@ -47,9 +47,9 @@ def update_job(
 
     if image_file:
         if db_job.image_route:
-            delete_image(db_job.image_route)
+            delete_image(db, db_job.image_route)
 
-        new_image_route = save_image(image_file)
+        new_image_route = save_image(db, image_file)
         db_job.image_route = new_image_route
 
     db.commit()
@@ -65,7 +65,7 @@ def delete_job(db: Session, job_id: int) -> Optional[Job]:
         return None
 
     if db_job.image_route:
-        delete_image(db_job.image_route)
+        delete_image(db, db_job.image_route)
 
     db.delete(db_job)
     db.commit()

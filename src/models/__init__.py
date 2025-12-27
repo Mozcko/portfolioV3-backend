@@ -3,3 +3,4 @@ from .certificate import Certificate
 from .technology import Technology
 from .job import Job
 from .social import Social
+from .media import Media

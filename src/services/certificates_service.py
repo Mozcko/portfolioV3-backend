@@ -17,7 +17,7 @@ def create_certificate(db: Session, certificate_data: certificate_schema.Certifi
     Crea un certificado, guarda su imagen y devuelve el objeto de la BD.
     """
     # 1. Guardar la imagen y obtener la ruta
-    image_route = save_image(image_file)
+    image_route = save_image(db, image_file)
     
     # 2. Crear el objeto del modelo con los datos y la ruta de la imagen
     db_certificate = Certificate(
@@ -55,10 +55,10 @@ def update_certificate(
     if image_file:
         # 1. Borrar la imagen antigua
         if db_certificate.image_route:
-            delete_image(db_certificate.image_route)
+            delete_image(db, db_certificate.image_route)
         
         # 2. Guardar la imagen nueva y actualizar la ruta
-        new_image_route = save_image(image_file)
+        new_image_route = save_image(db, image_file)
         db_certificate.image_route = new_image_route
 
     db.commit()
@@ -75,7 +75,7 @@ def delete_certificate(db: Session, certificate_id: int) -> Optional[Certificate
         
     # 1. Borrar la imagen del servidor
     if db_certificate.image_route:
-        delete_image(db_certificate.image_route)
+        delete_image(db, db_certificate.image_route)
         
     # 2. Borrar el registro de la base de datos
     db.delete(db_certificate)

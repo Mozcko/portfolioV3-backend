@@ -23,7 +23,7 @@ def create_social(
     """
     Creates a social profile, saves its image, and returns the DB object.
     """
-    image_route = save_image(image_file)
+    image_route = save_image(db, image_file)
 
     db_social = Social(**social_data.model_dump(), image_route=image_route)
 
@@ -54,9 +54,9 @@ def update_social(
 
     if image_file:
         if db_social.image_route:
-            delete_image(db_social.image_route)
+            delete_image(db, db_social.image_route)
 
-        new_image_route = save_image(image_file)
+        new_image_route = save_image(db, image_file)
         db_social.image_route = new_image_route
 
     db.commit()
@@ -71,7 +71,7 @@ def delete_social(db: Session, social_id: int) -> Optional[Social]:
         return None
 
     if db_social.image_route:
-        delete_image(db_social.image_route)
+        delete_image(db, db_social.image_route)
 
     db.delete(db_social)
     db.commit()

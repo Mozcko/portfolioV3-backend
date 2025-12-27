@@ -43,7 +43,7 @@ def create_project(
     technologies = validate_technology_ids(db, project.technology_ids or [])
     
     # Save image and get route
-    image_route = save_image(image_file)
+    image_route = save_image(db, image_file)
     
     # Create project
     db_project = Project(
@@ -92,8 +92,8 @@ def update_project(
     # Handle image update
     if image_file:
         if db_project.image_route:
-            delete_image(db_project.image_route)
-        new_image_route = save_image(image_file)
+            delete_image(db, db_project.image_route)
+        new_image_route = save_image(db, image_file)
         db_project.image_route = new_image_route
     
     db.commit()
@@ -110,7 +110,7 @@ def delete_project(db: Session, project_id: int) -> Optional[Project]:
         
     # Delete image
     if db_project.image_route:
-        delete_image(db_project.image_route)
+        delete_image(db, db_project.image_route)
         
     db.delete(db_project)
     db.commit()

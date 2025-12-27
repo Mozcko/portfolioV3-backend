@@ -5,6 +5,7 @@ import uuid
 from sqlalchemy.orm import Session
 from src.database import SessionLocal
 from src.models.user import User
+from src.models.media import Media
 from src.core.config import settings, SRC_DIR
 from src.core.security import get_password_hash
 from fastapi import UploadFile, HTTPException
@@ -51,10 +52,7 @@ def create_admin_user_on_startup():
         db.close()
 
 
-def save_image(file: UploadFile) -> str:
-    # 1. Definir la ruta y asegurarse de que el directorio exista
-    upload_dir = SRC_DIR / "static" / "images"
-    upload_dir.mkdir(parents=True, exist_ok=True)
+def save_image(db: Session, file: UploadFile) -> str:
 
     # 2. Validar que el archivo es una imagen usando Pillow
     try:
@@ -71,16 +69,21 @@ def save_image(file: UploadFile) -> str:
     # 3. Generar un nombre de archivo único para evitar colisiones
     file_extension = os.path.splitext(file.filename)[1]
     unique_filename = f"{uuid.uuid4()}{file_extension}"
-    file_path = upload_dir / unique_filename
 
-    # 4. Guardar el archivo en el disco
+    # 4. Guardar el archivo en la Base de Datos
     try:
-        with open(file_path, "wb") as buffer:
-            buffer.write(file.file.read())
+        new_image = Media(
+            filename=unique_filename,
+            content_type=file.content_type,
+            data=file.file.read()
+        )
+        db.add(new_image)
+        db.commit()
+        db.refresh(new_image)
     except Exception as e:
-        logger.error(f"No se pudo guardar el archivo: {e}")
+        logger.error(f"No se pudo guardar la imagen en la BD: {e}")
         raise HTTPException(
-            status_code=500, detail="No se pudo guardar el archivo de imagen."
+            status_code=500, detail="No se pudo guardar la imagen."
         )
 
     # 5. Devolver la ruta pública
@@ -92,13 +95,10 @@ def save_image(file: UploadFile) -> str:
     return public_url_path
 
 
-def delete_image(image_route: str) -> None:
+def delete_image(db: Session, image_route: str) -> None:
     """
-    Elimina un archivo de imagen del servidor.
+    Elimina una imagen de la base de datos.
     """
-    # La image_route es una URL pública como '/static/images/nombre.jpg'.
-    # Necesitamos convertirla a una ruta de archivo local.
-    # Quitamos el prefijo '/static/images/' para obtener solo el nombre del archivo.
     if not image_route.startswith("/static/images/"):
         logger.warning(
             f"La ruta de la imagen no tiene el formato esperado: {image_route}"
@@ -106,13 +106,12 @@ def delete_image(image_route: str) -> None:
         return
 
     filename = image_route.split("/")[-1]
-    file_path = SRC_DIR / "static" / "images" / filename
-
-    if os.path.exists(file_path):
-        try:
-            os.remove(file_path)
-            logger.info(f"Imagen '{filename}' eliminada exitosamente.")
-        except Exception as e:
-            logger.error(f"Error al eliminar la imagen '{filename}': {e}")
+    
+    media = db.query(Media).filter(Media.filename == filename).first()
+    
+    if media:
+        db.delete(media)
+        db.commit()
+        logger.info(f"Imagen '{filename}' eliminada de la BD exitosamente.")
     else:
-        logger.warning(f"Se intentó eliminar una imagen que no existe: {file_path}")
+        logger.warning(f"Se intentó eliminar una imagen que no existe en BD: {filename}")
