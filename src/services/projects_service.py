@@ -4,6 +4,7 @@ from typing import Optional, List
 
 from src.models.project import Project
 from src.models.technology import Technology
+from src.models.tag import Tag
 from src.schemas import project as project_schema
 
 from src.utils import save_image, delete_image
@@ -31,6 +32,21 @@ def validate_technology_ids(db: Session, technology_ids: List[int]) -> List[Tech
     
     return technologies
 
+def validate_tag_ids(db: Session, tag_ids: List[int]) -> List[Tag]:
+    """Validate that all tag IDs exist and return the tag objects."""
+    if not tag_ids:
+        return []
+    
+    tags = db.query(Tag).filter(Tag.id.in_(tag_ids)).all()
+    
+    if len(tags) != len(tag_ids):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="One or more tag IDs are invalid"
+        )
+    
+    return tags
+
 def create_project(
     db: Session, 
     project: project_schema.ProjectCreate, 
@@ -41,6 +57,7 @@ def create_project(
     """
     # Validate technology IDs
     technologies = validate_technology_ids(db, project.technology_ids or [])
+    tags = validate_tag_ids(db, project.tag_ids or [])
     
     # Save image and get route
     image_route = save_image(db, image_file)
@@ -50,11 +67,14 @@ def create_project(
         title=project.title,
         description_en=project.description_en,
         description_es=project.description_es,
+        project_url=project.project_url,
+        repo_url=project.repo_url,
         image_route=image_route
     )
     
     # Associate technologies
     db_project.technologies = technologies
+    db_project.tags = tags
     
     db.add(db_project)
     db.commit()
@@ -79,6 +99,7 @@ def update_project(
     
     # Handle technology updates separately
     technology_ids = update_data.pop('technology_ids', None)
+    tag_ids = update_data.pop('tag_ids', None)
     
     for key, value in update_data.items():
         if value is not None:
@@ -88,6 +109,11 @@ def update_project(
     if technology_ids is not None:
         technologies = validate_technology_ids(db, technology_ids)
         db_project.technologies = technologies
+
+    # Update tags if provided
+    if tag_ids is not None:
+        tags = validate_tag_ids(db, tag_ids)
+        db_project.tags = tags
     
     # Handle image update
     if image_file:

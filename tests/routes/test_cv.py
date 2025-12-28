@@ -1,6 +1,9 @@
 import io
+import pytest
 from fastapi.testclient import TestClient
 from unittest.mock import patch
+
+pytestmark = pytest.mark.skip("CV service is currently deactivated")
 
 def test_download_cv(client: TestClient):
     """Test downloading the CV PDF."""

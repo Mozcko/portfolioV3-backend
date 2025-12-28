@@ -39,7 +39,8 @@ def db_session() -> Generator:
     session = TestingSessionLocal(bind=connection)
     yield session
     session.close()
-    transaction.rollback()
+    if transaction.is_active:
+        transaction.rollback()
     connection.close()
 
 # --- Fixture para el Cliente de Prueba de FastAPI ---

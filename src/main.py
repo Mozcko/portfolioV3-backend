@@ -11,7 +11,7 @@ from src.database import engine, Base
 from src.dependencies import get_db
 from src.models.media import Media
 from src.core.config import settings, SRC_DIR
-from src.routes import auth, i18n, certificates, projects, technologies, jobs, socials
+from src.routes import auth, i18n, certificates, projects, technologies, jobs, socials, tags
 # from src.routes import cv
 from src.utils import create_admin_user_on_startup
 
@@ -66,3 +66,4 @@ app.include_router(technologies.router)
 app.include_router(jobs.router)
 # app.include_router(cv.router)
 app.include_router(socials.router)
+app.include_router(tags.router)
