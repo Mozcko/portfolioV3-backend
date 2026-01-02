@@ -44,6 +44,31 @@ def test_create_project(client: TestClient, db_session: Session, admin_auth_head
     assert data["technologies"][0]["id"] == tech.id
     assert data["technologies"][0]["name"] == "TestTech"
 
+def test_create_project_without_url(client: TestClient, admin_auth_headers: dict, create_test_image):
+    """Test creating a new project without the optional project_url."""
+    # 1. Prepare project data without project_url
+    project_data = {
+        "title": "Project Without URL",
+        "description_en": "English description",
+        "description_es": "Descripción en español",
+        "repo_url": "https://github.com/example/repo",
+    }
+    project_image = create_test_image("no_url.jpg")
+
+    # 2. Send request
+    response = client.post(
+        "/projects/",
+        headers=admin_auth_headers,
+        data=project_data,
+        files={"image": project_image}
+    )
+
+    # 3. Assertions
+    assert response.status_code == 201, response.text
+    data = response.json()
+    assert data["title"] == "Project Without URL"
+    assert data["project_url"] is None
+
 def test_read_projects(client: TestClient, db_session: Session, create_test_image):
     """Test reading a list of projects."""
     # Create a project to ensure the list is not empty

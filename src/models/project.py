@@ -14,7 +14,7 @@ class Project(Base):
     description_en = Column(String, nullable=False)
     description_es = Column(String, nullable=False)
     image_route = Column(String, nullable=False)
-    project_url = Column(String, nullable=False)
+    project_url = Column(String, nullable=True)
     repo_url = Column(String, nullable=True)
     
     # Many-to-many relationship with technologies

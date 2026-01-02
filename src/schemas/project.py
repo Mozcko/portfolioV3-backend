@@ -8,7 +8,7 @@ class ProjectBase(BaseModel):
     title: str
     description_en: str
     description_es: str
-    project_url: str
+    project_url: Optional[str] = None
     repo_url: Optional[str] = None
 
 

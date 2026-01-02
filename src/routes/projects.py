@@ -28,7 +28,7 @@ def create_project(
     title: str = Form(...),
     description_en: str = Form(...),
     description_es: str = Form(...),
-    project_url: str = Form(...),
+    project_url: Optional[str] = Form(None),
     repo_url: Optional[str] = Form(None),
     image: UploadFile = File(...),
     technology_ids: Optional[str] = Form(None),
