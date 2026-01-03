@@ -1,5 +1,30 @@
 {
   "navbar.home": "Inicio",
-  "navbar.about": "Sobre nosotros",
-  "navbar.contact": "contacto"
+  "navbar.about": "Sobre mí",
+  "navbar.work": "Proyectos",
+  "navbar.contact": "Contacto",
+  "hero.welcome": "¡Hola!, mi nombre es",
+  "hero.i_am": "y soy un:",
+  "hero.skills": [
+    "Desarrollador Full Stack",
+    "Entusiasta de Linux"
+  ],
+  "about.about_me": "Sobre mí",
+  "about.about_text": "Soy un desarrollador de software con experiencia en TypeScript y JavaScript, y conocimientos en frameworks como React, Node.js y Three.js. Aprendo rápido y colaboro estrechamente con los clientes para crear soluciones eficientes, escalables y fáciles de usar que resuelven problemas del mundo real. ¡Trabajemos juntos para dar vida a tus ideas!",
+  "experience.title": "Experiencia Laboral",
+  "experience.subtitle": "Lo que he hecho hasta ahora",
+  "works.title": "Proyectos",
+  "works.subtitle": "Mi trabajo",
+  "works.description": "Los siguientes proyectos muestran mis habilidades y experiencia a través de ejemplos reales de mi trabajo. Cada proyecto se describe brevemente con enlaces a repositorios de código y demostraciones en vivo.",
+  "feedbacks.title": "Testimonios",
+  "feedbacks.subtitle": "Lo que dicen los demás",
+  "contact.title": "Contacto",
+  "contact.subtitle": "Ponte en contacto",
+  "contact.form.name": "Tu nombre",
+  "contact.form.email": "Tu correo electrónico",
+  "contact.form.message": "Tu mensaje",
+  "contact.form.send": "Enviar",
+  "contact.form.sending": "Enviando...",
+  "contact.form.success": "¡Gracias! Te responderé lo antes posible.",
+  "contact.form.error": "Ah, algo salió mal. Por favor, inténtalo de nuevo."
 }
