@@ -3,22 +3,35 @@
   "navbar.about": "Sobre mí",
   "navbar.work": "Proyectos",
   "navbar.contact": "Contacto",
+  
   "hero.welcome": "¡Hola!, mi nombre es",
   "hero.i_am": "y soy un:",
   "hero.skills": [
     "Desarrollador Full Stack",
     "Entusiasta de Linux"
   ],
+  
   "about.about_me": "Sobre mí",
   "about.about_text": "Soy un desarrollador de software con experiencia en TypeScript y JavaScript, y conocimientos en frameworks como React, Node.js y Three.js. Aprendo rápido y colaboro estrechamente con los clientes para crear soluciones eficientes, escalables y fáciles de usar que resuelven problemas del mundo real. ¡Trabajemos juntos para dar vida a tus ideas!",
   "about.introduction": "Introducción",
+  
   "experience.title": "Experiencia Laboral",
   "experience.subtitle": "Lo que he hecho hasta ahora",
-  "works.title": "Proyectos",
-  "works.subtitle": "Mi trabajo",
-  "works.description": "Los siguientes proyectos muestran mis habilidades y experiencia a través de ejemplos reales de mi trabajo. Cada proyecto se describe brevemente con enlaces a repositorios de código y demostraciones en vivo.",
-  "feedbacks.title": "Testimonios",
-  "feedbacks.subtitle": "Lo que dicen los demás",
+  
+  "projects.title": "Proyectos",
+  "projects.subtitle": "Mi trabajo",
+  "projects.description": "Los siguientes proyectos muestran mis habilidades y experiencia a través de ejemplos reales de mi trabajo. Cada proyecto se describe brevemente con enlaces a repositorios de código y demostraciones en vivo.",
+  
+  "projects.filter_everything": "Todos",
+  "projects.filter_technologies": "Tecnologías",
+  "projects.filter_tags": "Tags",
+  "projects.filter_technologies_everything": "Todas las tecnologías",
+  "projects.filter_tags_everything": "Todos los tags",
+  "projects.no_projects_found": "No se encontraron proyectos con estos filtros.",
+  
+  "certificates.title": "Certificaciones",
+  "certificates.subtitle": "Mi camino de aprendizaje",
+  
   "contact.title": "Contacto",
   "contact.subtitle": "Ponte en contacto",
   "contact.form.name": "Tu nombre",
@@ -27,5 +40,8 @@
   "contact.form.send": "Enviar",
   "contact.form.sending": "Enviando...",
   "contact.form.success": "¡Gracias! Te responderé lo antes posible.",
-  "contact.form.error": "Ah, algo salió mal. Por favor, inténtalo de nuevo."
+  "contact.form.error": "Ah, algo salió mal. Por favor, inténtalo de nuevo.",
+  
+  "general.view_all": "Ver Todos",
+  "general.show_less": "Mostrar Menos"
 }
