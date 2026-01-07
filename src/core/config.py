@@ -1,6 +1,6 @@
 from pydantic_settings import BaseSettings
-from pydantic import ConfigDict
-from typing import List
+from pydantic import ConfigDict, field_validator
+from typing import List, Union
 from pathlib import Path
 
 SRC_DIR = Path(__file__).resolve().parent.parent
@@ -29,6 +29,15 @@ class Settings(BaseSettings):
     ALLOWED_EXPOSED_HEADERS: List[str] = []
     ALLOWED_CREDENTIALS: bool = False
     
+    @field_validator("ALLOWED_HOSTS", mode="before")
+    @classmethod
+    def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:
+        if isinstance(v, str) and not v.startswith("["):
+            return [i.strip() for i in v.split(",")]
+        elif isinstance(v, (list, str)):
+            return v
+        raise ValueError(v)
+
     model_config = ConfigDict(env_file=".env", extra="ignore")
 
 settings = Settings()
