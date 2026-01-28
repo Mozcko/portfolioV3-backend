@@ -7,16 +7,19 @@
   "hero.i_am": "and I am a:",
   "hero.skills": [
     "Full Stack Developer",
-    "Linux Enthusiast"
+    "Linux Enthusiast",
+    "Data Analyst",
+    "AI Developer",
+    "Tech Enthusiast"
   ],
   "about.about_me": "About Me",
-  "about.about_text": "I'm a skilled software developer with experience in TypeScript and JavaScript, and expertise in frameworks like React, Node.js, and Three.js. I'm a quick learner and collaborate closely with clients to create efficient, scalable, and user-friendly solutions that solve real-world problems. Let's work together to bring your ideas to life!",
+  "about.about_text": "I'm a Full-Stack Software Engineer driven by curiosity. I build software to deeply understand the technologies behind it. My focus is on continuous learning, constantly experimenting with new frameworks (like Astro/React) and AI integrations to expand my technical toolkit.",
   "about.introduction": "Introduction",
   "experience.title": "Work Experience",
   "experience.subtitle": "What I have done so far",
   "projects.title": "Projects",
   "projects.subtitle": "My work",
-  "projects.description": "Following projects showcases my skills and experience through real-world examples of my work. Each project is briefly described with links to code repositories and live demos in it.",
+  "projects.description": "Exploration & Engineering. This section is a mix of practical solutions and experimental prototypes. Most of these projects are born from a desire to learn—whether it's mastering a new architectural pattern, testing the limits of a modern framework, or diving into AI agents. It’s not just about the final code; it’s about the journey of solving complex problems.",
   "feedbacks.title": "Testimonials",
   "feedbacks.subtitle": "What others say",
   "contact.title": "Contact",

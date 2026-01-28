@@ -3,35 +3,31 @@
   "navbar.about": "Sobre mí",
   "navbar.work": "Proyectos",
   "navbar.contact": "Contacto",
-  
   "hero.welcome": "¡Hola!, mi nombre es",
   "hero.i_am": "y soy un:",
   "hero.skills": [
     "Desarrollador Full Stack",
-    "Entusiasta de Linux"
+    "Entusiasta de Linux",
+    "Analista de datos",
+    "Desarrollador IA",
+    "Amante de las computadoras"
   ],
-  
   "about.about_me": "Sobre mí",
-  "about.about_text": "Soy un desarrollador de software con experiencia en TypeScript y JavaScript, y conocimientos en frameworks como React, Node.js y Three.js. Aprendo rápido y colaboro estrechamente con los clientes para crear soluciones eficientes, escalables y fáciles de usar que resuelven problemas del mundo real. ¡Trabajemos juntos para dar vida a tus ideas!",
+  "about.about_text": "Soy un Ingeniero de Software Full-Stack impulsado por la curiosidad. Desarrollo software para comprender a fondo las tecnologías que lo sustentan. Mi enfoque es el aprendizaje continuo, experimentando constantemente con nuevos frameworks (como Astro/React) e integraciones de IA para expandir mis capacidades técnicas.",
   "about.introduction": "Introducción",
-  
   "experience.title": "Experiencia Laboral",
   "experience.subtitle": "Lo que he hecho hasta ahora",
-  
   "projects.title": "Proyectos",
   "projects.subtitle": "Mi trabajo",
-  "projects.description": "Los siguientes proyectos muestran mis habilidades y experiencia a través de ejemplos reales de mi trabajo. Cada proyecto se describe brevemente con enlaces a repositorios de código y demostraciones en vivo.",
-  
+  "projects.description": "Exploración e Ingeniería. Esta sección es una mezcla de soluciones prácticas y prototipos experimentales. La mayoría de estos proyectos nacen del deseo de aprender: ya sea dominando un nuevo patrón de arquitectura, probando los límites de un framework moderno o sumergiéndome en agentes de IA. No se trata solo del código final, sino del proceso de resolver problemas complejos.",
   "projects.filter_everything": "Todos",
   "projects.filter_technologies": "Tecnologías",
   "projects.filter_tags": "Tags",
   "projects.filter_technologies_everything": "Todas las tecnologías",
   "projects.filter_tags_everything": "Todos los tags",
   "projects.no_projects_found": "No se encontraron proyectos con estos filtros.",
-  
   "certificates.title": "Certificaciones",
   "certificates.subtitle": "Mi camino de aprendizaje",
-  
   "contact.title": "Contacto",
   "contact.subtitle": "Ponte en contacto",
   "contact.form.name": "Tu nombre",
@@ -41,7 +37,6 @@
   "contact.form.sending": "Enviando...",
   "contact.form.success": "¡Gracias! Te responderé lo antes posible.",
   "contact.form.error": "Ah, algo salió mal. Por favor, inténtalo de nuevo.",
-  
   "general.view_all": "Ver Todos",
   "general.show_less": "Mostrar Menos"
 }
