@@ -11,3 +11,4 @@ Pillow
 markdown2
 weasyprint
 psycopg2-binary
+psycopg[binary]
